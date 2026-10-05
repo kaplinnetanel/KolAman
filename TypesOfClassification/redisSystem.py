@@ -1,8 +1,6 @@
 import redis
 import logger as lg
 
-
-
 logging = lg.get_logger("redis")
 
 redis_client = redis.Redis(
@@ -13,7 +11,9 @@ redis_client = redis.Redis(
 def checker_and_send(alart_id):
     if redis_client.exists(alart_id):
         logging.info("Duplicate alert")
+        return
     else:
         redis_client.set(alart_id, "1", ex=300)
         logging.info("No duplicate was found, and it was saved to Redis.")
+        return
 
