@@ -5,13 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace NotificationGate.models;
 
 
-
+namespace MatzpehControlComponent​​API.models;
 public class Alert
 {
+    [BsonId]
+    public ObjectId Id { get; set; }
     [JsonPropertyName("alert_id")]
     public string Alert_id { get; set; } = " ";
     [JsonPropertyName("source")]

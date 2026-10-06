@@ -1,6 +1,4 @@
-﻿using DBCommandSystem.Data;
-using DBCommandSystem.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using NotificationGate.models;
 using System;
@@ -19,7 +17,8 @@ public class ServiceHandler
     private string _queueName = "";
     public ServiceHandler(IMongoDatabase mongoDatabase)
     {
-        _mongoDatabase = mongoDatabase;    }
+        _mongoDatabase = mongoDatabase; 
+    }
     public async Task<bool> ProcessEventAsync(string message,string queueName)
     {
         _queueName = queueName;
@@ -47,24 +46,10 @@ public class ServiceHandler
             if (alert.Lon < -180 || alert.Lon > 180) 
                 return false;
 
-            //var alertDB = new AlertDB
-            //{
-            //     Alert_id = alert.Alert_id,
-            //    Source = alert.Source,
-            //    Title  = alert.Title,
-            //    Content = alert.Content,
-            //    Priority =alert.Priority,
-            //    Classification = alert.Classification,
-            //    Lat =alert.Lat,
-            //    Lon = alert.Lon,
-            //    Timestamp = alert.Timestamp,
-            //    Status = alert.Status,
-            //    Command = _queueName
-            //};
+          
             await collection.InsertOneAsync(alert);
-            //_context.alertDbs.Add(alertDB);
-            //await _context.SaveChangesAsync(); 
-
+            Console.WriteLine($"alert in DB {alert.Alert_id }");
+         
             return true; } 
         catch
         {

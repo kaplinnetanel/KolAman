@@ -23,7 +23,7 @@ def check_alert(alter_id):
     redis_client.set(
         alert_key,
         "1",
-        ex=300
+        ex=100
     )
     return True
 

@@ -24,3 +24,6 @@ public class Alert
     public string status { get; set; } = "WAITING"; 
 
 }
+
+
+

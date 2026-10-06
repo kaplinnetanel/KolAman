@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 namespace DBCommandSystem.Service;
 
 
-
-
 public class RabbitMqService
 {
     private IConnection? _connection;
@@ -36,7 +34,7 @@ public class RabbitMqService
         _connection = await factory.CreateConnectionAsync();
         _channel = await _connection.CreateChannelAsync();
 
-        await _channel.QueueDeclareAsync(_queueName, true, false, false);
+        await _channel.QueueDeclareAsync(_queueName, false, false, false);
 
         _consumer = new AsyncEventingBasicConsumer(_channel);
 
@@ -45,7 +43,7 @@ public class RabbitMqService
             var body = eventArgs.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
 
-            var success = await _serviceHandler.ProcessEventAsync(message);
+            var success = await _serviceHandler.ProcessEventAsync(message, queueName);
 
             if (success)
             {

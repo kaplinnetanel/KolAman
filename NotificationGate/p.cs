@@ -32,3 +32,11 @@
 //    await kafkaService.SendMessageAsync("Warning", null, json);
 
 //}
+
+
+
+
+//var _kafkaService = new ProducerService(BootstrapServers);
+//string fileText = File.ReadAllText(e.FullPath);
+//await _kafkaService.SendMessageAsync("Warning", null, fileText);
+//Console.WriteLine("Created send to kafka");

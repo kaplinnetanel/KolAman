@@ -9,9 +9,6 @@ using System.Text.Json;
 using Serilog;
 using Elastic.Serilog.Sinks;
 
-
-
-
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.Console()
