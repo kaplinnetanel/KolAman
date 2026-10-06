@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace NotificationGate.Service;
 
@@ -29,10 +30,11 @@ public class ProducerService
             Value = massegeValue
         };
         var result = await _producer.ProduceAsync(topicName, message);
-        Console.WriteLine("send  the  topic Warning");
+        //Console.WriteLine("send  the  topic Warning");
+        Log.Information("send  the  topic Warning");
     }
 }
 
 
 
-  
+

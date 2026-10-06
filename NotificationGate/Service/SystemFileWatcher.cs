@@ -1,5 +1,6 @@
 ﻿using Confluent.Kafka;
 using NotificationGate.models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,6 @@ namespace NotificationGate.Service;
 public class SystemFileWatcher
 {
     public string BootstrapServers;
-
     public SystemFileWatcher(string bootstrapServers)
     {
 
@@ -23,7 +23,7 @@ public class SystemFileWatcher
     public void Load_Data()
 
     {
-        using var watcher = new FileSystemWatcher(@"C:\Users\User\Desktop\KolAman\alert-simulator\alerts");
+        using var watcher = new FileSystemWatcher(@"C:\Users\User\Desktop\KolAman\alert-simulator\alerts"); 
 
         watcher.NotifyFilter = NotifyFilters.Attributes
                                 | NotifyFilters.CreationTime
@@ -34,30 +34,29 @@ public class SystemFileWatcher
                                 | NotifyFilters.Security
                                 | NotifyFilters.Size;
 
-        watcher.Changed += OnChanged;
         watcher.Created += OnCreated;
-        watcher.Filter = "*.json";
+        //ready
+        watcher.Filter = "*.ready";
+        //watcher.Filter = "*.json";
         watcher.IncludeSubdirectories = true;
         watcher.EnableRaisingEvents = true;
 
-        Console.WriteLine("Press enter to exit.");
-        var jsonString = Console.Read();
-    }
-    private async void OnChanged(object sender, FileSystemEventArgs e)
-    {
-        if (e.ChangeType != WatcherChangeTypes.Changed)
-        {
-            return;
-        }
-        var kafkaService = new ProducerService(BootstrapServers);
-        await kafkaService.SendMessageAsync("Warning", null, e.FullPath);
-        Console.WriteLine("Changed: send to kafka");
+
+        Log.Information("Press enter to exit.");
+        Console.ReadLine();
     }
     private async void OnCreated(object sender, FileSystemEventArgs e)
     {
-        var kafkaService = new ProducerService(BootstrapServers);
-        await kafkaService.SendMessageAsync("Warning", null,  e.FullPath);
-        Console.WriteLine("Created send to kafka");
+        var _kafkaService = new ProducerService(BootstrapServers);
+        var exist = File.Exists(e.FullPath);
+        if (exist)
+        {
+            string fullPath = e.FullPath.Replace("ready", "json");
+            string fileText = File.ReadAllText(fullPath);
+            await _kafkaService.SendMessageAsync("Warning", null, fileText);
+            Log.Information("Created send to kafka");
+        }
+        Log.Error("the file not ready ");
 
     }
     private static void PrintException(Exception? ex)
@@ -72,6 +71,7 @@ public class SystemFileWatcher
         }
     }
 }
+
 
 
 

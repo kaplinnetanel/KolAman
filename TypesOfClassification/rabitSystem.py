@@ -1,23 +1,22 @@
-# import json 
-# import pika
+import pika
+import json
 
 
-# # def send_to_rabit(message):
-# #     connection = pika.BlockingConnection(
-# #         pika.ConnectionParameters("localhost")
-# #     )
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters("localhost")
+)
+
+channel = connection.channel()
 
 
-# #     def send_By_rabit(message):
-        
-# #         channel = connection.channel()
+def send_to_rabbit(message, region):
 
-# #         channel.queue_declare(queue="alerts")
+    channel.queue_declare(
+        queue=region
+    )
 
-# #         channel.basic_publish(
-# #         exchange="",
-# #         routing_key="alerts",
-# #         body=json.dumps(message)
-# #         )
-
-# #         connection.close()
+    channel.basic_publish(
+        exchange="",
+        routing_key=region,
+        body=json.dumps(message)
+    )
